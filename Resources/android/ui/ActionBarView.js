@@ -18,8 +18,6 @@ function ActionBarView(args) {
 	}
 	else {
 		self.add(new ui.ImageView('/images/logo.png', {
-			//width: '240dip',
-			//height: '46dip'
 			width: '320dip',
 			height: '49dip'
 		}));

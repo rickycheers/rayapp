@@ -18,6 +18,7 @@ function TabButton(id, text, icon, index, selected) {
 	self.selected = selected;
 	
 	icon = selected ? icon.replace('.png', '_active.png') : icon;
+	//Ti.API.info(icon);
 
 	var image = new ui.Component(new ui.ImageView(icon,{
 		top: '5dip',
@@ -51,7 +52,7 @@ function TabButton(id, text, icon, index, selected) {
 		}
 		self.set('backgroundColor', background);
 		image.set('image', icon_image);
-		Ti.API.info(self.index + " " + idx + " " + icon_image);
+		//Ti.API.info(self.index + " " + idx + " " + icon_image);
 	};
 
 	self.toggleIcon = function(){
@@ -89,7 +90,6 @@ function TabStripView(args) {
 		
 		(function(i,t) {
 			t.addEventListener('click', function() {
-				Ti.API.info('touch!');
 				self.fireEvent('selected', {
 					index:i
 				});
