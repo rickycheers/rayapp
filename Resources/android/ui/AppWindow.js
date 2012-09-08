@@ -13,7 +13,7 @@ function AppWindow() {
 	var self = new ui.Window({
 		navBarHidden:true,
 		exitOnClose:true,
-		backgroundImage:'/images/back.png'
+		backgroundImage:'/images/back.jpg'
 	});
 	self.orientationModes = [Ti.UI.PORTRAIT];
 
@@ -28,46 +28,45 @@ function AppWindow() {
 	
 	//home action bar
 	var actionBar = new ActionBarView({
-		title: 'Historias Rayadas',
-		buttons: {
-			info: {
-				id: 'info',
-				icon:'/images/14-gear@2x.png',
-				width:40
-			}
-		}
+		//title: 'Historias Rayadas',
+		//buttons: {
+		//	info: {
+		//		id: 'info',
+		//		icon:'/images/14-gear@2x.png',
+		//		width:40
+		//	}
+		//}
 	});
 	self.add(actionBar.viewProxy);
 	
 	//main tab control
 	var tabs = new TabStripView({
 		viewArgs: {
-			top:44
+			top: '51dip'
 			//bottom:0
 		},
 		tabs: {
 			partido: {
 				title:'El Partido',
-				icon:'/images/tabs/chat_white.png'
+				icon:'/images/icon_partido.png',
 			},
 			dato: {
 				title:'El Dato',
-				icon:'/images/tabs/group_white.png'
+				icon:'/images/icon_dato.png'
 			},
 			trivia: {
 				title:'La Trivia',
-				icon:'/images/tabs/calendar_white.png'
+				icon:'/images/icon_trivia.png'
 			}
 		}
 	});
 	self.add(tabs.viewProxy);
 	
 	var scroller = Ti.UI.createScrollableView({
-		top:100,
+		top:'100dip',
 		left:0,
 		right:0,
 		bottom:0,
-		//views:[partido, dato, trivia],
 		showPagingControl:false
 	});
 	//self.add(scroller);
@@ -88,7 +87,19 @@ function AppWindow() {
 		w.open();
 	});
 
-	self.addEventListener('open', function(){
+	reload_button = new ui.Button({
+		title: 'Recargar datos',
+		width: '100dip',
+		height: '60dip',
+		font: { fontSize: '7pt' },
+		visible: false
+	});
+	reload_button.addEventListener('click', loadDataAndCreateContentViews);
+	self.add(reload_button);
+
+	self.addEventListener('open', loadDataAndCreateContentViews);
+
+	function loadDataAndCreateContentViews(){
 		activityIndicator.show();
 		if( Titanium.Network.online ){
 			var url = "http://historias.kiwam.co/?app=1&for_day=26&for_month=7";
@@ -96,7 +107,7 @@ function AppWindow() {
 			    onload: function(e) {
 			        json = JSON.parse(this.responseText);
 
-			        //create main app views
+			        //create app content views
 			        var partido = new PartidoView(json[0]),
 			        	dato    = new PartidoView(json[1]),
 			        	trivia  = new PartidoView(json[2])
@@ -104,10 +115,13 @@ function AppWindow() {
 			        scroller.views = [partido, dato, trivia];
 			        self.add(scroller);
 					activityIndicator.hide();
+					reload_button.hide();
 			    },
 			    onerror: function(e) {
 			        Ti.API.debug(e.error);
+			        activityIndicator.hide();
 			        alert('Error al obtener datos.');
+			        reload_button.show();
 			    },
 			    timeout:5000
 			});
@@ -115,9 +129,11 @@ function AppWindow() {
 			xhr.open("GET", url);
 			xhr.send();
 		} else {
+			activityIndicator.hide();
 			alert('No hay red de datos disponible.');
+			reload_button.show();
 		}
-	});
+	}
 
 	self.add(new Facebook(self));
 

@@ -5,18 +5,14 @@ var faceboook = function(){
 	Titanium.Facebook.appid = "264917850197668";
 	Titanium.Facebook.permissions = ['publish_stream', 'read_stream'];
 
-	//var facebook_button = Titanium.Facebook.createLoginButton({
-	//		style: 'wide',
-	//		bottom: 30,
-	//		zIndex: 1000
-	//	});
-
 	//facebook_button.hide();
 
 	var button = new ui.Button({
-		title: 'Comenta con Facebook',
-		bottom: 60,
-		zIndex: 1000
+		backgroundImage: '/images/facebook-button.png',
+		width: '190dip',
+		height: '40dip',
+		bottom: '25dip',
+		zIndex: 1
 	});
 
 	button.addEventListener('click', function(){
@@ -65,9 +61,23 @@ function showCommentStuff(){
 	});
 	self.add(actionBar.viewProxy);
 
-	var label = new ui.Label('Escribe aquí tu comentario.');
-	var textarea = new Titanium.UI.createTextArea({width: 300, height:300});
-	var send_button = new ui.Button({title:'Ok'});
+	var label = new ui.Label('Escribe aquí tu comentario.', {
+		top: '10dip',
+		color: '#fff',
+		font: { fontSize: '7pt', fontWeight: 'bold' }
+	});
+	var textarea = new Titanium.UI.createTextArea({
+		top: '10dip',
+		width: '300dip',
+		height:'140dip'
+	});
+	var send_button = new ui.Button({
+		title: 'Publicar',
+		width: '100dip',
+		height: '60dip',
+		top: '10dip',
+		font: { fontSize: '7pt' },
+	});
 	self.add(label);
 	self.add(textarea);
 	self.add(send_button);

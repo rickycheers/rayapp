@@ -8,30 +8,60 @@ function tabWidth() {
 
 function TabButton(id, text, icon, index, selected) {
 	var self = new ui.Component(Ti.UI.createView({
-		width:tabWidth(),
-		opacity:0.8,
-		backgroundColor:(selected) ? '#444444' : 'transparent'
+		layout: 'vertical',
+		width: tabWidth(),
+		opacity: 0.8,
+		backgroundColor: (selected) ? '#eaeaea' : 'transparent'
 	}));
 	self.id = id;
 	self.index = index;
 	self.selected = selected;
 	
-	self.add(new ui.ImageView(icon,{
-		top:6,
-		height:25
+	icon = selected ? icon.replace('.png', '_active.png') : icon;
+
+	var image = new ui.Component(new ui.ImageView(icon,{
+		top: '5dip',
+		height: '30dip'
 	}));
+	self.add(image);
 	
 	self.add(new ui.Label(text,{
-		text:text,
-		color:'#fff',
-		bottom:3,
+		text: text,
+		color:'#033269',
 		font: {
-			fontSize:10
+			fontSize:'10dip',
+			fontStyle: 'italic',
+			fontWeight: 'bold'
 		}
 	}));
 	
-	self.toggle = function(on) {
-		(on) ? self.set('backgroundColor', '#444444') : self.set('backgroundColor', 'transparent');
+	self.toggle = function(idx) {
+		
+		var background = "";
+		var icon_image = "";
+		var current_icon = image.get('image');
+
+		if( self.index ===  idx ){
+			background = "#eaeaea";
+			icon_image = current_icon.replace('_active', '');
+			icon_image = icon_image.replace('.png', '_active.png');
+		} else {
+			background = 'transparent';
+			icon_image = current_icon.replace('_active', '');
+		}
+		self.set('backgroundColor', background);
+		image.set('image', icon_image);
+		Ti.API.info(self.index + " " + idx + " " + icon_image);
+	};
+
+	self.toggleIcon = function(){
+		var current_icon = image.get('image');
+		if( current_icon.match('_active') ){
+			var new_icon = current_icon.replace('_active', '');
+		} else {
+			var new_icon = current_icon.replace('.png', '_active.png');
+		}
+		image.set('image', new_icon);
 	};
 	
 	return self;
@@ -39,9 +69,10 @@ function TabButton(id, text, icon, index, selected) {
 
 function TabStripView(args) {
 	var self = new ui.Component(Ti.UI.createView(_.extend({
-		height:50,
+		height:'50dip',
 		layout:'horizontal',
-		backgroundColor:'#121212'
+		//backgroundColor:'#121212',
+		backgroundImage: '/images/menu-background.jpg'
 	}, args.viewArgs||{})));
 	
 	var tabs = [],
@@ -58,7 +89,7 @@ function TabStripView(args) {
 		
 		(function(i,t) {
 			t.addEventListener('click', function() {
-				self.selectIndex(i);
+				Ti.API.info('touch!');
 				self.fireEvent('selected', {
 					index:i
 				});
@@ -69,13 +100,8 @@ function TabStripView(args) {
 	}
 	
 	self.selectIndex = function(idx) {
-		_.each(tabs, function(currentTab) {
-			if (currentTab.index === idx) {
-				currentTab.toggle(true);
-			}
-			else {
-				currentTab.toggle(false);
-			}
+		_.each(tabs, function(tab) {
+			tab.toggle(idx);
 		});
 	};
 	

@@ -21,30 +21,49 @@ function ContentView(data) {
 			break;
 	}
 	
-	self.add(new ui.Label(title, {
-		color:'#ffffff'
-	}));
+	//self.add(new ui.Label(title, {
+	//	color:'#ffffff'
+	//}));
 
+	// Banner
 	self.add(new ui.View({
 		backgroundColor: '#eaeaea',
-		width: 310,
-		height: 200,
-		top: 10,
+		width: '300dip',
+		height: '112dip',
+		top: '10dip',
+		borderColor: '#fff',
+		borderWidth: 2
 	}));
+
+	// Content
+	var content_wrapper = new ui.ScrollView({
+		showVerticalScrollIndicator: true,
+		layout: 'vertical',
+		backgroundColor: '#000',
+		opacity: 0.7,
+		width: '300dip',
+		height: '140dip',
+		top: '10dip',
+		borderColor: '#fff',
+		borderWidth: 2
+	});
 
 	var date = data.for_day + ' de ' + readableMonth(data.for_month);
-	self.add(new ui.Label(date, {
+	content_wrapper.add(new ui.Label(date, {
 		top: 10,
-		left: '10%'
+		left: 10,
+		color: "#fff",
+		font: { fontSize: '8pt', fontWeight: 'bold' }
 	}));
 
-	self.add(new ui.Label(
-		data.text,
-		{
-			width: '90%',
-			top: 10
-		}
-		));
+	content_wrapper.add(new ui.Label(data.text, {
+			top: 10,
+			left: 10,
+			color: "#fff",
+			font: { fontSize: '7pt' }
+		}));
+
+	self.add(content_wrapper);
 	
 	return self;
 }

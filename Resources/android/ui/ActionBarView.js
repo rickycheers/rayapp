@@ -4,20 +4,24 @@ var _ = require('/lib/underscore'),
 
 function ActionBarView(args) {
 	var self = new ui.Component(new ui.View({
-		height:44,
+		height:'51dip',
 		top:0,
-		backgroundImage:'/images/sliver.png'
+		backgroundImage:'/images/header-background.jpg'
 	}));
 	
-	//title label or image if none provided
+	// title label or image if none provided
 	if (args.title) {
 		self.add(new ui.Label(args.title, _.extend({
-			left:5
+			left: '10dip',
+			font: { fontSize: '5pt' }
 		},theme.headerText)));
 	}
 	else {
-		self.add(new ui.ImageView('/images/appc_white.png', {
-			left:5
+		self.add(new ui.ImageView('/images/logo.png', {
+			//width: '240dip',
+			//height: '46dip'
+			width: '320dip',
+			height: '49dip'
 		}));
 	}
 	
@@ -67,7 +71,7 @@ function ActionBarView(args) {
 			});
 		})(buttonId, button);
 		
-		buttonOffset = buttonOffset+buttonData.width;
+		buttonOffset = buttonOffset + buttonData.width;
 	}
 	
 	return self;
