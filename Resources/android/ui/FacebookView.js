@@ -2,7 +2,7 @@ var faceboook = function(){
 	var self = this,
 	ui       = require('/ui/components');
 
-	Titanium.Facebook.appid = "264917850197668";
+	Titanium.Facebook.appid = "103480546474105";
 	Titanium.Facebook.permissions = ['publish_stream', 'read_stream'];
 
 	//facebook_button.hide();
@@ -66,15 +66,18 @@ function showCommentStuff(){
 		color: '#fff',
 		font: { fontSize: '7pt', fontWeight: 'bold' }
 	});
-	var textarea = new Titanium.UI.createTextArea({
+	var textarea = Titanium.UI.createTextArea({
 		top: '10dip',
 		width: '300dip',
 		height:'140dip'
 	});
 	var send_button = new ui.Button({
-		title: 'Publicar',
-		width: '100dip',
-		height: '60dip',
+		//title: 'Publicar',
+		backgroundImage: '/images/facebook-publish.png',
+		width: '177dip',
+		height: '36dip',
+		//width: '100dip',
+		//height: '60dip',
 		top: '10dip',
 		font: { fontSize: '7pt' },
 	});
@@ -95,13 +98,20 @@ function showCommentStuff(){
 	self.add(dialog);
 
 	send_button.addEventListener('click', function(){
+		var description =
+			"¿Qué tanto sabes de la historia de Rayados? Con esta aplicación conocerás mejor que nadie y de una manera entretenida la historia del Monterrey." + 
+			"\nLos mejores partidos de toda la historia del equipo Rayados. " +
+			"\nDatos históricos de los jugadores de Rayados que no encontrarás en ninguna otra parte." +
+			"\nLas trivias más divertidas y más sorprendentes del Monterrey." +
+			"\nCada día del año recordaremos un partido y un dato histórico además de una trivia relacionada." +
+			"\nDescarga nuestra aplicación. Es GRATUITA. Únete y pon a prueba tus conocimientos de tu equipo favorito. Además podrás ganar REGALOS!";
 		var data = {
-			link: "https://developer.mozilla.org/en/JavaScript",
-			name: "Best online Javascript reference",
+			link: "https://www.facebook.com/historiasrayadas",
+			name: "Inolvidables jugadores y las grandes hazañas del Monterrey reunidas en esta aplicación",
 			message: textarea.getValue(),
-			caption: "MDN Javascript Reference",
-			picture: "https://developer.mozilla.org/media/img/mdn-logo.png",
-			description: "This section of the site is dedicated to JavaScript-the-language, the parts that are not specific to web pages or other host environments...",
+			caption: "Historias Rayadas",
+			picture: "https://fbcdn-sphotos-f-a.akamaihd.net/hphotos-ak-ash3/12864_197536819108_7310873_n.jpg",
+			description: description,
 		};
 
 		activityIndicator.show();

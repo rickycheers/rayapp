@@ -1,4 +1,4 @@
-function ContentView(data) {
+function ContentView(data, banners) {
 	var _        = require('/lib/underscore'),
 		theme    = require('/ui/theme'),
 		ui       = require('/ui/components');
@@ -26,14 +26,28 @@ function ContentView(data) {
 	//}));
 
 	// Banner
-	self.add(new ui.View({
+	var banner_url = banners ? banners[0] : '';
+	var banner = new ui.View({
 		backgroundColor: '#eaeaea',
+		backgroundImage: banner_url,
 		width: '300dip',
 		height: '112dip',
 		top: '10dip',
 		borderColor: '#fff',
 		borderWidth: 2
-	}));
+	});
+	self.add(banner);
+	//Ti.API.info(JSON.stringify(banners));
+	if( banners ){
+		var banner_counter = 0;
+		var banners_length = banners.length;
+
+		setInterval(function(){
+			Ti.API.info( 'Cambiando banner...' + banner_counter );
+			banner.backgroundImage = banners[banner_counter].url;
+			banner_counter = banner_counter == banners_length - 1 ? 0 : banner_counter + 1;
+		}, 5000);
+	}
 
 	// Content
 	var content_wrapper = new ui.ScrollView({
@@ -42,7 +56,7 @@ function ContentView(data) {
 		backgroundColor: '#000',
 		opacity: 0.7,
 		width: '300dip',
-		height: '140dip',
+		height: '150dip',
 		top: '10dip',
 		borderColor: '#fff',
 		borderWidth: 2
@@ -64,6 +78,8 @@ function ContentView(data) {
 		}));
 
 	self.add(content_wrapper);
+
+	Ti.API.info( content_wrapper.getTop() );
 	
 	return self;
 }
