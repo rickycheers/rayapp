@@ -43,9 +43,15 @@ function ContentView(data, banners) {
 
 		setInterval(function(){
 			banner.backgroundImage = banners[banner_counter].url;
+			banner.link = banners[banner_counter].link;
 			banner_counter = banner_counter == banners_length - 1 ? 0 : banner_counter + 1;
 		}, 5000);
 	}
+	banner.addEventListener('click', function(){
+		if( banner.link ){
+			Titanium.Platform.openURL(banner.link);
+		}
+	});
 
 	// Content
 	var content_wrapper = new ui.ScrollView({
