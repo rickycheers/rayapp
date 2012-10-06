@@ -1,12 +1,11 @@
-var faceboook = function(){
+var faceboook = function( content_json, app_window ){
 	var self = this,
 	ui       = require('/ui/components');
 
 	Titanium.Facebook.appid = "103480546474105";
-	Titanium.Facebook.permissions = ['publish_stream', 'read_stream'];
+	Titanium.Facebook.permissions = ['publish_stream', 'publish_actions'];
 
 	//facebook_button.hide();
-
 	var button = new ui.Button({
 		backgroundImage: '/images/facebook-button.png',
 		width: '190dip',
@@ -19,13 +18,13 @@ var faceboook = function(){
 		if( !Titanium.Facebook.loggedIn ){
 			Titanium.Facebook.authorize();
 		} else {
-			showCommentStuff();
+			showCommentStuff(content_json, app_window);
 		}
 	});
 
-	Titanium.Facebook.addEventListener('login', function(e){
+	Titanium.Facebook.addEventListener('login', function(e, content_json){
 		if(e.success){
-			showCommentStuff();
+			showCommentStuff(content_json, app_window);
 		}
 		if(e.error){
 			alert(e.error);
@@ -37,11 +36,13 @@ var faceboook = function(){
 
 module.exports = faceboook;
 
-function showCommentStuff(){
+function showCommentStuff(content_json, app_window){
 	var _ = require('/lib/underscore'),
 		theme = require('/ui/theme'),
 		ui = require('/ui/components'),
 		ActionBarView = require('/ui/ActionBarView');
+	
+	//Ti.API.info( JSON.stringify(app_window.json_content) );
 
 	var self = new ui.Window({
 		navBarHidden:true,
@@ -97,7 +98,8 @@ function showCommentStuff(){
 	var dialog = Titanium.UI.createAlertDialog();
 	self.add(dialog);
 
-	send_button.addEventListener('click', function(){
+	send_button.addEventListener('click', function(e){
+		/*
 		var description =
 			"¿Qué tanto sabes de la historia de Rayados? Con esta aplicación conocerás mejor que nadie y de una manera entretenida la historia del Monterrey." + 
 			"\nLos mejores partidos de toda la historia del equipo Rayados. " +
@@ -108,26 +110,57 @@ function showCommentStuff(){
 		var data = {
 			link: "https://www.facebook.com/historiasrayadas",
 			name: "Inolvidables jugadores y las grandes hazañas del Monterrey reunidas en esta aplicación",
-			message: textarea.getValue(),
+			message: 'Acabo de hacer un comentario en una publicaión de Historias Rayadas',
 			caption: "Historias Rayadas",
 			picture: "https://fbcdn-sphotos-f-a.akamaihd.net/hphotos-ak-ash3/12864_197536819108_7310873_n.jpg",
 			description: description,
 		};
+		*/
+
+		data = {
+			message: textarea.getValue()
+		}
 
 		activityIndicator.show();
 
-		Titanium.Facebook.requestWithGraphPath('me/feed', data, 'POST', function(e){
-			if(e.success){
-				dialog.title = '¡Listo!';
-				dialog.message = 'Tu comentario ha sido publicado.';
-			} else {
-				dialog.title = '¡Auch!';
-				dialog.message = 'Tu comentario no pudo ser publicado en este momento.';
-			}
-			activityIndicator.hide();
+		if( app_window && app_window.json_content[0] && app_window.json_content[0].fb_post_id ){
+			Titanium.Facebook.requestWithGraphPath(app_window.json_content[0].fb_post_id+'/comments', data, 'POST', function(e){
+				var auth_error = false;
+				if(e.success){
+					dialog.title = '¡Listo!';
+					dialog.message = 'Tu comentario ha sido publicado.';
+				} else {
+					//Ti.API.info(JSON.stringify(e));
+					if( e.error.match(/access token/i) ){
+						dialog.title = '¡Auch!';
+						dialog.message = "Parece que hay un problema con Facebook.\n\nPor favor inicia sesión nuevamente presionando el botón de comentar.";
+						auth_error = true;
+					} else {
+						dialog.title = '¡Auch!';
+						dialog.message = 'Tu comentario no pudo ser publicado en este momento.';
+					}
+				}
+				timeout = auth_error ? 4000 : 2000;
+				activityIndicator.hide();
+				dialog.show();
+				setTimeout(function(){
+					dialog.hide();
+					if( !auth_error ){
+						self.close();
+					} else {
+						Titanium.Facebook.logout();
+						app_window.fireEvent('reLoginFacebook');
+						self.close();
+					}
+					
+				}, timeout);
+			});
+		} else {
+			dialog.title = '¡Lo sentimos!';
+			dialog.message = 'El día de hoy no publicamos contenido en Facebook para que puedas hacer tu comentario.';
 			dialog.show();
-			setTimeout(function(){ dialog.hide(); self.close(); }, 2000);
-		});
+			setTimeout(function(){ dialog.hide(); self.close(); }, 3500);
+		}
 	});
 	
 	actionBar.addEventListener('buttonPress', function() {
@@ -136,17 +169,3 @@ function showCommentStuff(){
 	
 	self.open();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

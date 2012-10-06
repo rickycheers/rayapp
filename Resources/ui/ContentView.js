@@ -42,6 +42,7 @@ function ContentView(data, banners) {
 		var banners_length = banners.length;
 
 		setInterval(function(){
+			//Ti.API.info(banners[banner_counter].url);
 			banner.backgroundImage = banners[banner_counter].url;
 			banner.link = banners[banner_counter].link;
 			banner_counter = banner_counter == banners_length - 1 ? 0 : banner_counter + 1;

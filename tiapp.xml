@@ -10,7 +10,7 @@
     <sdk-version>2.1.2.GA</sdk-version>
     <id>com.kywam.historiasrayadas</id>
     <name>HistoriasRayadas</name>
-    <version>v1.0</version>
+    <version>1.2</version>
     <publisher>KIWAM</publisher>
     <url>http://kiwam.co/</url>
     <description>¿Qué tanto sabes de la historia de Rayados? Con esta aplicación conocerás mejor que nadie y de una manera entretenida la historia del Monterrey.</description>
@@ -36,7 +36,12 @@
             <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
         </orientations>
     </iphone>
-    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+        <manifest android:versionCode="3"
+            android:versionName="1.2"
+            android:installLocation="auto">
+        </manifest>
+    </android>
     <mobileweb>
         <precache/>
         <splash>

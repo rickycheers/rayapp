@@ -99,13 +99,20 @@ function AppWindow() {
 	reload_button.addEventListener('click', loadDataAndCreateContentViews);
 	self.add(reload_button);
 
-	// When the applicatio window opens load content data and create content views
+	// When the application window opens load content data and create content views
 	self.addEventListener('open', loadDataAndCreateContentViews);
 
-	function loadDataAndCreateContentViews(){
-		// show an activity indicator while loading data
-		activityIndicator.show();
+	self.addEventListener('reLoginFacebook', function(){
+		loadDataAndCreateContentViews( true );
+	});
 
+	function loadDataAndCreateContentViews( isReloading ){
+		isReloading = typeof isReloading == 'undefined' ? true : false;
+		if( !isReloading ){
+			// show an activity indicator while loading data
+			activityIndicator.show();
+		}
+		
 		if( Titanium.Network.online ){
 			var date = new Date;
 			var day = date.getDate();
@@ -115,17 +122,28 @@ function AppWindow() {
 			    onload: function(e) {
 			        json = JSON.parse(this.responseText);
 
-			        // Create app content views
-			        // all the listening thing below is in order to get an "hydrated" banners object
-			        // to pass to the creation of the views...
-			        var partido = new PartidoView(json[0], banners),
-			        	dato    = new PartidoView(json[1], banners),
-			        	trivia  = new PartidoView(json[2], banners)
-			        ;
-			        scroller.views = [partido, dato, trivia];
-			        self.add(scroller);
-					activityIndicator.hide();
-					reload_button.hide();
+			        if( !isReloading ){
+			        	// Create app content views
+			        	// all the listening thing below is in order to get an "hydrated" banners object
+			        	// to pass to the creation of the views...
+			        	var partido = new PartidoView(json[0], banners),
+			        		dato    = new PartidoView(json[1], banners),
+			        		trivia  = new PartidoView(json[2], banners)
+			        	;
+			        	if( Ti.Platform.osname !== 'mobileweb' ){
+			        		self.json_content = json;
+			        		Ti.API.info( JSON.stringify(json) );
+			        		self.add(new Facebook(json, self));
+			        	}
+			        	scroller.views = [partido, dato, trivia];
+			        	self.add(scroller);
+			       		activityIndicator.hide();
+			 			reload_button.hide();
+			        } else {
+			        	self.json_content = json;
+			        	Titanium.Facebook.authorize();
+			        }
+			        
 			    },
 			    onerror: function(e) {
 			        Ti.API.debug(e.error);
@@ -170,10 +188,6 @@ function AppWindow() {
 		});
 		xhr.open("GET", url);
 		xhr.send();
-	}
-
-	if( Ti.Platform.osname !== 'mobileweb' ){
-		self.add(new Facebook(self));
 	}
 
 	return self;
