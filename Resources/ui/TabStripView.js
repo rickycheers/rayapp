@@ -1,9 +1,16 @@
 var _ = require('/lib/underscore'),
-	ui = require('/ui/components'),
-	theme = require('/ui/theme');
+	ui       = require('/ui/components'),
+	theme    = require('/ui/theme')
+	device   = require('/ui/device');
 
 function tabWidth() {
-	return Ti.Platform.displayCaps.platformWidth / 3;
+	if( device.isTablet() ){
+		// The divice is a tablet, so return height values as width, since we are forcing
+		// the app to display in portrait mode.
+		return Ti.Platform.displayCaps.platformHeight / 3;
+	} else {
+		return Ti.Platform.displayCaps.platformWidth / 3;
+	}
 }
 
 function TabButton(id, text, icon, index, selected) {

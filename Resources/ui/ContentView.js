@@ -1,7 +1,8 @@
 function ContentView(data, banners) {
 	var _        = require('/lib/underscore'),
 		theme    = require('/ui/theme'),
-		ui       = require('/ui/components');
+		ui       = require('/ui/components'),
+		device   = require('/ui/device');
 	
 	var self = new ui.View({
 		layout: 'vertical'
@@ -24,14 +25,29 @@ function ContentView(data, banners) {
 	//self.add(new ui.Label(title, {
 	//	color:'#ffffff'
 	//}));
+	if( device.isTablet() ){
+		var banner_width   = '95%',
+		    banner_height  = '25%',
+		    content_width  = '95%',
+		    content_height = '50%',
+		    font_size      = 16
+		;
+	} else {
+		var banner_width   = '300dip',
+		    banner_height  = '112dip',
+		    content_width  = '300dip',
+		    content_height = '150dip',
+		    font_size      = Ti.Platform.osname == 'mobileweb' ? 14 : 8;
+		;
+	}
 
 	// Banner
 	var banner_url = banners ? banners[0].url : '';
 	var banner = new ui.View({
 		backgroundColor: '#eaeaea',
 		backgroundImage: banner_url,
-		width: '300dip',
-		height: '112dip',
+		width: banner_width,
+		height: banner_height,
 		top: '10dip',
 		borderColor: '#fff',
 		borderWidth: 2
@@ -60,15 +76,14 @@ function ContentView(data, banners) {
 		layout: 'vertical',
 		backgroundColor: '#000',
 		opacity: 0.7,
-		width: '300dip',
-		height: '150dip',
+		width: content_width,
+		height: content_height,
 		top: '10dip',
 		borderColor: '#fff',
 		borderWidth: 2
 	});
 
 	var date = data.for_day + ' de ' + readableMonth(data.for_month);
-	var font_size = Ti.Platform.osname == 'mobileweb' ? 14 : 8;
 	content_wrapper.add(new ui.Label(date, {
 		top: 10,
 		left: 10,

@@ -7,7 +7,7 @@
         <target device="android">true</target>
         <target device="blackberry">false</target>
     </deployment-targets>
-    <sdk-version>2.1.2.GA</sdk-version>
+    <sdk-version>2.1.3.GA</sdk-version>
     <id>com.kywam.historiasrayadas</id>
     <name>HistoriasRayadas</name>
     <version>1.2</version>
@@ -37,9 +37,19 @@
         </orientations>
     </iphone>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="3"
-            android:versionName="1.2"
-            android:installLocation="auto">
+        <manifest android:installLocation="auto" android:versionCode="4" android:versionName="1.2.1">
+            <activity android:configChanges="keyboardHidden" android:label="HistoriasRayadas" android:name=".HistoriasrayadasActivity" android:theme="@style/Theme.Titanium" android:screenOrientation="portrait" >
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+            </activity>
+
+            <activity android:configChanges="keyboardHidden" android:screenOrientation="portrait" android:name="org.appcelerator.titanium.TiActivity"/>
+            <activity android:configChanges="keyboardHidden" android:screenOrientation="portrait" android:name="org.appcelerator.titanium.TiTranslucentActivity" android:theme="@android:style/Theme.Translucent"/>
+            <activity android:configChanges="keyboardHidden" android:screenOrientation="portrait" android:name="org.appcelerator.titanium.TiModalActivity" android:theme="@android:style/Theme.Translucent"/>
+            <activity android:configChanges="keyboardHidden" android:screenOrientation="portrait" android:name="ti.modules.titanium.ui.TiTabActivity"/>
+            <activity android:name="ti.modules.titanium.ui.android.TiPreferencesActivity"/>
         </manifest>
     </android>
     <mobileweb>

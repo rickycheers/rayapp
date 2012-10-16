@@ -37,10 +37,11 @@ var faceboook = function( content_json, app_window ){
 module.exports = faceboook;
 
 function showCommentStuff(content_json, app_window){
-	var _ = require('/lib/underscore'),
-		theme = require('/ui/theme'),
-		ui = require('/ui/components'),
-		ActionBarView = require('/ui/ActionBarView');
+	var _             = require('/lib/underscore'),
+		theme         = require('/ui/theme'),
+		ui            = require('/ui/components'),
+		ActionBarView = require('/ui/ActionBarView')
+		device        = require('/ui/device');
 	
 	//Ti.API.info( JSON.stringify(app_window.json_content) );
 
@@ -69,7 +70,7 @@ function showCommentStuff(content_json, app_window){
 	});
 	var textarea = Titanium.UI.createTextArea({
 		top: '10dip',
-		width: '300dip',
+		width: device.isTablet() ? '95%' : '300dip',
 		height:'140dip'
 	});
 	var send_button = new ui.Button({
